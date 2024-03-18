@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {useState} from "react";
+import {Canvas, useLoader} from "@react-three/fiber";
+import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader";
+import teapot from "./assets/teapot.obj";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+function Model(props: { url: string }) {
+    const group = useLoader(OBJLoader, props.url)
+    return <primitive object={group}/>
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+    const [size, setSize] = useState<number>(1)
+
+    return (
+        <Canvas>
+            <ambientLight/>
+            <pointLight position={[1, 1, 1]}/>
+            <mesh onClick={() => setSize(size + 1)}>
+                <Model url={teapot}/>
+                <meshToonMaterial color="orange"/>
+            </mesh>
+        </Canvas>
+    );
+}
